@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_name">Mi MotelSv</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!-- label activities -->
+    <string name="motel_moteles">Moteles</string>
+    <string name="motel_moteles_detalle">Detalle Motel</string>
+    <string name="motel_imagenes">Soy una imagen</string>
+    <!-- strings del login -->
+    <string name="motel_txt_login">login</string>
+    <string name="motel_txt_pass">password</string>
+    <string name="motel_btn_login">LOG IN</string>
+
+    <!-- strings para sing up -->
+    <string name="moten_txt_sinup">Registrarme</string>
+    <string name="moten_txt_nombre">Nombre</string>
+    <string name="moten_txt_apellido">Apellido</string>
+    <string name="moten_txt_masculino">Masculino</string>
+    <string name="moten_txt_femenino">Femenino</string>
+    <string name="moten_txt_edad">Edad</string>
+    <string name="moten_txt_correo">Correo</string>
+    <string name="moten_txt_username">Email</string>
+    <string name="moten_txt_password">Contraseña</string>
+    <string name="moten_txt_password2">Repetir contraseña</string>
+    <string name="moten_txt_telefono">Telefono</string>
+    <string name="moten_txt_departamentos">Departamentos</string>
+    <string name="moten_txt_municipios">Muncipios</string>
+    <string name="moten_txt_genero">Genero</string>
+
+    <!-- moteles -->
+    <string name="motel_txt">Texto</string>
+    <string name="motel_txt_boton_buscar">Buscar</string>
+</resources>
