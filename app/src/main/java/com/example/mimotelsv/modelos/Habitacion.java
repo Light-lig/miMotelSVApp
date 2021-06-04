@@ -5,27 +5,36 @@ import java.util.List;
 public class Habitacion {
     private int id;
     private String nombre;
+    private int numero;
     private String tipo;
     private double precio;
     private String tiempo;
     private String descripcion;
-    private int idMotel;
     private String estado;
     private List<Fotos> fotos;
 
     public Habitacion() {
     }
 
-    public Habitacion(int id, String nombre, String tipo, double precio, String tiempo, String descripcion, int idMotel, String estado, List<Fotos> fotos) {
+
+    public Habitacion(int id, String nombre, int numero, String tipo, double precio, String tiempo, String descripcion, String estado, List<Fotos> fotos) {
         this.id = id;
         this.nombre = nombre;
+        this.numero = numero;
         this.tipo = tipo;
         this.precio = precio;
         this.tiempo = tiempo;
         this.descripcion = descripcion;
-        this.idMotel = idMotel;
         this.estado = estado;
         this.fotos = fotos;
+    }
+
+    public int getNumero() {
+        return numero;
+    }
+
+    public void setNumero(int numero) {
+        this.numero = numero;
     }
 
     public int getId() {
@@ -74,14 +83,6 @@ public class Habitacion {
 
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
-    }
-
-    public int getIdMotel() {
-        return idMotel;
-    }
-
-    public void setIdMotel(int idMotel) {
-        this.idMotel = idMotel;
     }
 
     public String getEstado() {

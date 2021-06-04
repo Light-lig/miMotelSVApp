@@ -24,13 +24,20 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.NetworkError;
+import com.android.volley.NoConnectionError;
+import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.ServerError;
+import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.mimotelsv.modelos.Motel;
+import com.example.mimotelsv.util.Constantes;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -39,6 +46,7 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.progressindicator.LinearProgressIndicator;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -55,12 +63,13 @@ public class detalleMotel extends Fragment implements OnMapReadyCallback {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ID_MOTEL = "idMotel";
-
+    private Constantes con  = new Constantes();
     // TODO: Rename and change types of parameters
     private String idMotel;
     private ImageView imagenPortada;
     private TextView txtNombre, txtDireccion, txtHoraApertura, txtHoraCierre,txtRating;
     private RatingBar rating;
+    private LinearProgressIndicator barraDetalleMotel;
     MapView mapView;
     GoogleMap map;
     private  Motel mo = new Motel();
@@ -103,11 +112,12 @@ public class detalleMotel extends Fragment implements OnMapReadyCallback {
         txtHoraCierre = v.findViewById(R.id.txtHoraCierre);
         txtRating = v.findViewById(R.id.txtRating);
         rating = v.findViewById(R.id.rbRatingMotel);
-
+        barraDetalleMotel = v.findViewById(R.id.progressBarDetalleMotel);
         mapView.onCreate(savedInstanceState);
 
         mapView.getMapAsync(this);
-        String URL = "http://192.168.1.10:8080/moteles/oneMotel/" + idMotel;
+        barraDetalleMotel.show();
+        String URL = "http://"+con.IP+":8080/moteles/oneMotel/" + idMotel;
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, URL, null,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -135,9 +145,9 @@ public class detalleMotel extends Fragment implements OnMapReadyCallback {
                                 imagenPortada.setImageBitmap(bmp);
                                 txtNombre.setText(mo.getNombre());
                                 txtDireccion.setText(mo.getDireccion());
-                                txtHoraApertura.setText(mo.getHoraApertura());
-                                txtHoraCierre.setText(mo.getHoraCierre());
-                                txtRating.setText(String.valueOf(mo.getRating()));
+                                txtHoraApertura.setText("Hora apertura: " +mo.getHoraApertura());
+                                txtHoraCierre.setText("Hora cierre: "+mo.getHoraCierre());
+                                txtRating.setText("Calificacion: "+String.valueOf(mo.getRating()));
                                 rating.setRating((float)mo.getRating());
 
                                 LatLng motelHubicacion =  new LatLng(mo.getLatitud(), mo.getLongitud());
@@ -145,6 +155,7 @@ public class detalleMotel extends Fragment implements OnMapReadyCallback {
                                 CameraUpdate location = CameraUpdateFactory.newLatLngZoom(
                                         motelHubicacion, 15);
                                 map.animateCamera(location);
+                                barraDetalleMotel.hide();
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -155,7 +166,19 @@ public class detalleMotel extends Fragment implements OnMapReadyCallback {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(getActivity(),error.toString(),Toast.LENGTH_LONG).show();
+                        if (error instanceof TimeoutError || error instanceof NoConnectionError) {
+                            Toast.makeText(getContext(),
+                                    getContext().getString(R.string.error_network_timeout),
+                                    Toast.LENGTH_LONG).show();
+                        } else if (error instanceof AuthFailureError) {
+                            //TODO
+                        } else if (error instanceof ServerError) {
+                            //TODO
+                        } else if (error instanceof NetworkError) {
+                            //TODO
+                        } else if (error instanceof ParseError) {
+                            //TODO
+                        }
                     }
                 });
 

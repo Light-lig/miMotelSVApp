@@ -1,15 +1,18 @@
 <resources>
-    <string name="app_name">Mi MotelSv</string>
+    <string name="app_name">Mi Motel Sv</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <!-- label activities -->
     <string name="motel_moteles">Moteles</string>
     <string name="motel_moteles_detalle">Detalle Motel</string>
+    <string name="motel_habitacion_detalle">Detalle habitación</string>
+
     <string name="motel_imagenes">Soy una imagen</string>
+    <string name="error_network_timeout">Ocurrio un error en la red, verifique si esta conectado.</string>
     <!-- strings del login -->
-    <string name="motel_txt_login">login</string>
-    <string name="motel_txt_pass">password</string>
-    <string name="motel_btn_login">LOG IN</string>
+    <string name="motel_txt_login">Username</string>
+    <string name="motel_txt_pass">Password</string>
+    <string name="motel_btn_login">Iniciar Sesion</string>
 
     <!-- strings para sing up -->
     <string name="moten_txt_sinup">Registrarme</string>
@@ -23,11 +26,33 @@
     <string name="moten_txt_password">Contraseña</string>
     <string name="moten_txt_password2">Repetir contraseña</string>
     <string name="moten_txt_telefono">Telefono</string>
-    <string name="moten_txt_departamentos">Departamentos</string>
-    <string name="moten_txt_municipios">Muncipios</string>
+    <string name="motel_txt_departamentos">Choose Department</string>
+    <string name="motel_txt_municipios">Choose City</string>
     <string name="moten_txt_genero">Genero</string>
+    <string name="motel_txt_categorias">Categorias</string>
 
     <!-- moteles -->
     <string name="motel_txt">Texto</string>
     <string name="motel_txt_boton_buscar">Buscar</string>
+    <string name="search_title">buscar</string>
+    <string name="search_hint">Buscar</string>
+    <string name="menu_refresh">Refrescar</string>
+    <string name="motel_filtrar">Filtrar</string>
+    <string name="quiero_mi_cuenta">Quiero mi cuenta</string>
+    <string name="motel_btn_registrarme">Registrarme</string>
+    <string name="motel_txt_confirm_pass">Confirm Password</string>
+    <string name="ya_tengo_cuenta">Ya tengo cuenta!</string>
+    <string name="crear_cuenta">Crear Cuenta</string>
+    <string name="motel_descripciones">Esto es una descripcion.</string>
+    <string name="motel_titulo">Titulo</string>
+    <string name="motel_ubicacion">Ubicacion:</string>
+    <string name="navigation_drawer_open">Se abrio el menu.</string>
+    <string name="navigation_drawer_close">Se cerro el menu.</string>
+    <string name="menu_home">Home</string>
+    <string name="menu_perfil">Perfil</string>
+    <string name="menu_reservaciones">Reservaciones</string>
+    <string name="menu_logout">Log out</string>
+    <string name="copyright">Mi motel sv</string>
+
+
 </resources>

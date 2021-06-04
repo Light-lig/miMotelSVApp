@@ -1,5 +1,6 @@
 package com.example.mimotelsv;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
@@ -13,9 +14,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.NetworkError;
+import com.android.volley.NoConnectionError;
+import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.ServerError;
+import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
@@ -23,6 +30,9 @@ import com.example.mimotelsv.adaptadores.HabitacionesAdapter;
 import com.example.mimotelsv.modelos.Fotos;
 import com.example.mimotelsv.modelos.Habitacion;
 import com.example.mimotelsv.modelos.Motel;
+import com.example.mimotelsv.util.Constantes;
+import com.example.mimotelsv.util.RecyclerItemClickListener;
+import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.gson.JsonArray;
 
 import org.json.JSONArray;
@@ -43,9 +53,12 @@ public class Habitaciones extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ID_MOTEL = "idMotel";
+    private Constantes con  = new Constantes();
     private RecyclerView rvHabitaciones;
     private List<Habitacion> lista = new ArrayList<>();
     private HabitacionesAdapter adaptador;
+    private LinearProgressIndicator barraDetalleMotel;
+
     // TODO: Rename and change types of parameters
     private String idMotel;
 
@@ -83,11 +96,25 @@ public class Habitaciones extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_habitaciones, container, false);
         rvHabitaciones = v.findViewById(R.id.rvHabitaciones);
-        rvHabitaciones.setLayoutManager(new LinearLayoutManager(getActivity().getBaseContext()));
+        barraDetalleMotel = v.findViewById(R.id.progressBarHabitaciones);
+        barraDetalleMotel.show();
         DownloadTask tarea = new DownloadTask();
         tarea.execute();
         adaptador = new HabitacionesAdapter(lista);
         rvHabitaciones.setAdapter(adaptador);
+        rvHabitaciones.addOnItemTouchListener(new RecyclerItemClickListener(getActivity().getBaseContext(), rvHabitaciones, new RecyclerItemClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                Intent detalleHabitacion = new Intent(getActivity(), Activity_detalle_habitacion.class);
+                detalleHabitacion.putExtra("idHabitacion",String.valueOf(lista.get(position).getId()));
+                startActivity(detalleHabitacion);
+            }
+
+            @Override
+            public void onItemLongClick(View view, int position) {
+
+            }
+        }));
 
         return v;
     }
@@ -95,7 +122,7 @@ public class Habitaciones extends Fragment {
 
         @Override
         protected String doInBackground(String... strings) {
-            String URL = "http://192.168.1.10:8080/moteles/habitacion/" + idMotel;
+            String URL = "http://"+con.IP+":8080/moteles/habitacion/" + idMotel;
             JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, URL, null,
                     new Response.Listener<JSONArray>() {
                         @Override
@@ -108,6 +135,7 @@ public class Habitaciones extends Fragment {
                                     for(int i=0;i<response.length();i++){
                                         JSONObject habitacion = response.getJSONObject(i);
                                         Habitacion ha = new Habitacion();
+                                        ha.setId(habitacion.getInt("haId"));
                                         ha.setNombre(habitacion.getString("haNombreHabitacion") + " - " + habitacion.getInt("haNumeroHabitacion"));
                                         ha.setDescripcion(habitacion.getString("haDescripcion") + " - Tipo: " + habitacion.getString("haTipoDeHabitacion"));
                                         ha.setPrecio(habitacion.getDouble("haPrecio"));
@@ -129,7 +157,7 @@ public class Habitaciones extends Fragment {
                                         adaptador.notifyDataSetChanged();
                                     }
 
-
+                                    barraDetalleMotel.hide();
                                 }catch (JSONException e){
                                     e.printStackTrace();
                                 }
@@ -141,7 +169,19 @@ public class Habitaciones extends Fragment {
                     new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            Toast.makeText(getActivity().getBaseContext(),error.toString(),Toast.LENGTH_LONG).show();
+                            if (error instanceof TimeoutError || error instanceof NoConnectionError) {
+                                Toast.makeText(getContext(),
+                                        getContext().getString(R.string.error_network_timeout),
+                                        Toast.LENGTH_LONG).show();
+                            } else if (error instanceof AuthFailureError) {
+                                //TODO
+                            } else if (error instanceof ServerError) {
+                                //TODO
+                            } else if (error instanceof NetworkError) {
+                                //TODO
+                            } else if (error instanceof ParseError) {
+                                //TODO
+                            }
                         }
                     });
 

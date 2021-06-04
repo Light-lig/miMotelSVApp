@@ -3,25 +3,48 @@
     package="com.example.mimotelsv">
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="com.example.permission.MAPS_RECEIVE"/>
+    <uses-permission android:name="com.example.permission.MAPS_RECEIVE" />
 
     <application
         android:allowBackup="true"
+        android:usesCleartextTraffic="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MiMotelSv">
-        <meta-data android:name="com.google.android.maps.v2.API_KEY" android:value="AIzaSyDvi1--7QqqewOGxmJgVqdNLWvZcBftk94"/>
-        <activity android:name=".ActivityReservaciones"></activity>
+        <activity android:name=".Activity_singUp"></activity>
+        <activity
+            android:name=".Filtrar"
+            android:label="Mas filtros" />
+
+        <meta-data
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="AIzaSyDvi1--7QqqewOGxmJgVqdNLWvZcBftk94" />
+
+        <activity android:name=".ActivityReservaciones" />
         <activity android:name=".Activity_perfil" />
-        <activity android:name=".Activity_detalle_habitacion" />
-        <activity android:name=".Activity_detalle_motel" android:label="@string/motel_moteles_detalle"/>
-        <activity android:name=".Activity_moteles" android:label="@string/motel_moteles"/>
+        <activity
+            android:name=".Activity_detalle_habitacion"
+            android:label="@string/motel_habitacion_detalle" />
+        <activity
+            android:name=".Activity_detalle_motel"
+            android:label="@string/motel_moteles_detalle" />
+        <activity
+            android:name=".Activity_moteles"
+            android:label="@string/motel_moteles">
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
+
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".MainActivity"
             android:theme="@style/SplashTheme">

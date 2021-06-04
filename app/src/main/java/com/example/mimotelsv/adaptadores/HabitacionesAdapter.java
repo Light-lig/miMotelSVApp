@@ -21,7 +21,7 @@ import java.util.List;
 
 public class HabitacionesAdapter extends RecyclerView.Adapter<HabitacionesAdapter.ViewHolder>{
     public class ViewHolder extends RecyclerView.ViewHolder{
-        private TextView titulo, descripcion, txtPrecio, txtTiempo, txtEstado;
+        private TextView titulo, descripcion, txtPrecio, txtTiempo;
         private ImageView fotoPortada, ivEstado;
         public ViewHolder(View itemView){
             super(itemView);
@@ -30,7 +30,6 @@ public class HabitacionesAdapter extends RecyclerView.Adapter<HabitacionesAdapte
             fotoPortada = itemView.findViewById(R.id.ivPortada);
             txtPrecio = itemView.findViewById(R.id.tvPrecio);
             txtTiempo = itemView.findViewById(R.id.tvTiempo);
-            txtEstado = itemView.findViewById(R.id.tvEstado);
             ivEstado = itemView.findViewById(R.id.ivEstado);
         }
     }
@@ -58,9 +57,8 @@ public class HabitacionesAdapter extends RecyclerView.Adapter<HabitacionesAdapte
         holder.descripcion.setText(listaHabitaciones.get(position).getDescripcion());
         Bitmap bmp = BitmapFactory.decodeByteArray(listaHabitaciones.get(position).getFotos().get(0).getFoto(), 0, listaHabitaciones.get(position).getFotos().get(0).getFoto().length);
         holder.fotoPortada.setImageBitmap(bmp);
-        holder.txtPrecio.setText(String.valueOf(listaHabitaciones.get(position).getPrecio()));
+        holder.txtPrecio.setText("$"+String.valueOf(listaHabitaciones.get(position).getPrecio()));
         holder.txtTiempo.setText(listaHabitaciones.get(position).getTiempo());
-        holder.txtEstado.setText(listaHabitaciones.get(position).getEstado());
        switch (listaHabitaciones.get(position).getEstado()){
            case "Disponible":
                 holder.ivEstado.setImageResource(R.drawable.verde);

@@ -13,12 +13,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 
+import com.example.mimotelsv.util.Constantes;
+import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 public class Activity_detalle_motel extends AppCompatActivity {
     private ViewPager2 viewPager;
     private FragmentStateAdapter pagerAdapter;
+    private Constantes con  = new Constantes();
     public static int currentPosition;
     public static Context contextOfApplication;
     public static Context getContextOfApplication()
@@ -28,6 +31,7 @@ public class Activity_detalle_motel extends AppCompatActivity {
     private static final String KEY_CURRENT_POSITION = "com.google.samples.gridtopager.key.currentPosition";
     private static final int NUM_PAGES = 2;
     private String idMotel;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

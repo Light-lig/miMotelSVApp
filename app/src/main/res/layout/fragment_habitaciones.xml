@@ -3,11 +3,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    tools:context=".Habitaciones" >
+    tools:context=".Habitaciones">
+
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/progressBarHabitaciones"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:indeterminate="true" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvHabitaciones"
         android:layout_width="match_parent"
+        app:spanCount="@integer/grid_span_count"
+        app:layoutManager="GridLayoutManager"
+        android:scrollbarStyle="outsideOverlay"
         android:layout_height="match_parent" />
 </LinearLayout>

@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:opacity="opaque">
 
-    <item android:drawable="@color/blue" />
+    <item android:drawable="@color/purple_200" />
 
     <item>
 
