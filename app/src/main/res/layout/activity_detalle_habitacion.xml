@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="5dp"
+    android:orientation="vertical"
     tools:context=".Activity_detalle_habitacion">
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize" />
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/card"
@@ -151,4 +155,4 @@
         </LinearLayout>
 
     </com.google.android.material.card.MaterialCardView>
-</ScrollView>
+</LinearLayout>

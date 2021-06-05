@@ -68,7 +68,7 @@ public class Activity_moteles extends AppCompatActivity implements NavigationVie
         setContentView(R.layout.activity_moteles);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
-
+        setSupportActionBar(toolbar);
         drawerLayout = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);

@@ -6,7 +6,10 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".Activity_detalle_motel">
-
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize" />
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tlMotelDetalle"
         android:layout_width="match_parent"
