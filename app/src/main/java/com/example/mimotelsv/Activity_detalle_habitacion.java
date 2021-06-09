@@ -2,11 +2,13 @@ package com.example.mimotelsv;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -14,6 +16,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Base64;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,20 +38,29 @@ import com.example.mimotelsv.adaptadores.ViewPagerAdapter;
 import com.example.mimotelsv.modelos.Fotos;
 import com.example.mimotelsv.modelos.Habitacion;
 import com.example.mimotelsv.modelos.Motel;
+import com.example.mimotelsv.modelos.Reservacion;
 import com.example.mimotelsv.util.Constantes;
+import com.example.mimotelsv.util.Session;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.progressindicator.LinearProgressIndicator;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Activity_detalle_habitacion extends AppCompatActivity {
     // creating object of ViewPager
@@ -58,7 +70,10 @@ public class Activity_detalle_habitacion extends AppCompatActivity {
     ImageView ivEstado;
     MaterialButton btnReservar;
     private String idHabitacion;
+    private LinearProgressIndicator barraProgreso;
+    private Session preferencias;
     private  Habitacion ha = new Habitacion();
+    private Reservacion res = new Reservacion();
     // images array
     List<String> images = new ArrayList<>();
 
@@ -83,6 +98,8 @@ public class Activity_detalle_habitacion extends AppCompatActivity {
         txtEstado = findViewById(R.id.txtEstado);
         ivEstado = findViewById(R.id.ivEstadoHabitacion);
         btnReservar = findViewById(R.id.btnReservar);
+        barraProgreso = findViewById(R.id.progresBarHabitacion);
+
         Intent intent = getIntent();
         idHabitacion = intent.getStringExtra("idHabitacion");
         // Initializing the ViewPagerAdapter
@@ -92,6 +109,18 @@ public class Activity_detalle_habitacion extends AppCompatActivity {
         mViewPager.setAdapter(mViewPagerAdapter);
         DownloadTask tarea = new DownloadTask();
         tarea.execute();
+        btnReservar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(ha.getEstado() != "Reservado"){
+                reservar();
+
+                }else{
+                    Toast.makeText(getBaseContext(),"La habitacion ya esta reservada intentelo mas tarde.",Toast.LENGTH_LONG).show();
+
+                }
+            }
+        });
 
     }
     private class DownloadTask extends AsyncTask<String, Void, String> {
@@ -119,6 +148,15 @@ public class Activity_detalle_habitacion extends AppCompatActivity {
                                     JSONObject estado = response.getJSONObject("esId");
                                     ha.setEstado(estado.getString("estEstado"));
                                     JSONArray fotos = response.getJSONArray("smFotosList");
+
+                                    //llenando objeto reservacion
+                                    res.setResCantidadPagar(ha.getPrecio());
+                                    res.setFecha(new Date());
+                                    Date currentTime = Calendar.getInstance().getTime();
+                                    res.setHora(currentTime.toString());
+                                    res.setHaId(ha.getId());
+                                    Integer idUsuario = preferencias.getAppSettings().getInt("idUsuario",-1);
+                                    res.setUsrId(idUsuario);
 
                                     txtNombre.setText(ha.getNombre() +" "+ String.valueOf(ha.getNumero()));
                                     txtTipo.setText(ha.getTipo());
@@ -183,6 +221,80 @@ public class Activity_detalle_habitacion extends AppCompatActivity {
             Volley.newRequestQueue(getBaseContext()).add(request);
             return null;
         }
+    }
+    public void reservar(){
+        String URL = "http://"+con.IP+":8080/moteles/reservar";
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("resCantidadPagar", String.valueOf(res.getResCantidadPagar()));
+        params.put("fecha", res.getFecha().toString());
+        params.put("hora", res.getHora());
+        params.put("haId", String.valueOf(res.getHaId()));
+        params.put("UsrId", String.valueOf(res.getUsrId()));
+
+        barraProgreso.show();
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, URL, new JSONObject(params),
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        if(response == null){
+                            barraProgreso.hide();
+                            Toast.makeText(getBaseContext(),"Ocurrio un error.",Toast.LENGTH_LONG).show();
+                        }else{
+                            try {
+                                barraProgreso.hide();
+
+
+                                    txtEstado.setText("Reservado");
+                                    ivEstado.setImageResource(R.drawable.rojo);
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(getBaseContext());
+
+                                    builder.setMessage("La habitacion se reservo exito, dispone de media hora para llegar a su destino de lo contrario su tiempo de estancia se acortara." +
+                                            "muchas gracias.")
+                                            .setTitle("Informacion");
+                                    builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            dialog.dismiss();
+                                        }
+                                    });
+                                    AlertDialog dialog = builder.create();
+
+
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
+
+                        }
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        if (error instanceof TimeoutError || error instanceof NoConnectionError) {
+                            Toast.makeText(getBaseContext(),
+                                    getBaseContext().getString(R.string.error_network_timeout),
+                                    Toast.LENGTH_LONG).show();
+                            barraProgreso.hide();
+                        } else if (error instanceof AuthFailureError) {
+                            //TODO
+                        } else if (error instanceof ServerError) {
+                            //TODO
+                        } else if (error instanceof NetworkError) {
+                            //TODO
+                        } else if (error instanceof ParseError) {
+                            //TODO
+                        }
+                    }
+                });
+
+        request.setRetryPolicy(new
+
+                DefaultRetryPolicy(60000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+
+        Volley.newRequestQueue(getBaseContext()).add(request);
     }
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
