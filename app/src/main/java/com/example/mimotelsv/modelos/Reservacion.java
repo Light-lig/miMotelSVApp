@@ -7,19 +7,25 @@ public class Reservacion {
     private double resCantidadPagar;
     private Date fecha;
     private String hora;
-    private Integer haId;
-    private Integer UsrId;
+    private String nombreHabitacion;
+    private String tipoHabitacion;
+    private int numeroHabitacion;
+    private int haId;
+    private int usrId;
 
     public Reservacion() {
     }
 
-    public Reservacion(Integer resId, double resCantidadPagar, Date fecha, String hora, Integer haId, Integer usrId) {
+    public Reservacion(Integer resId, double resCantidadPagar, Date fecha, String hora, String nombreHabitacion, String tipoHabitacion, int numeroHabitacion, int haId, int usrId) {
         this.resId = resId;
         this.resCantidadPagar = resCantidadPagar;
         this.fecha = fecha;
         this.hora = hora;
+        this.nombreHabitacion = nombreHabitacion;
+        this.tipoHabitacion = tipoHabitacion;
+        this.numeroHabitacion = numeroHabitacion;
         this.haId = haId;
-        UsrId = usrId;
+        this.usrId = usrId;
     }
 
     public Integer getResId() {
@@ -54,19 +60,43 @@ public class Reservacion {
         this.hora = hora;
     }
 
-    public Integer getHaId() {
+    public String getNombreHabitacion() {
+        return nombreHabitacion;
+    }
+
+    public void setNombreHabitacion(String nombreHabitacion) {
+        this.nombreHabitacion = nombreHabitacion;
+    }
+
+    public String getTipoHabitacion() {
+        return tipoHabitacion;
+    }
+
+    public void setTipoHabitacion(String tipoHabitacion) {
+        this.tipoHabitacion = tipoHabitacion;
+    }
+
+    public int getNumeroHabitacion() {
+        return numeroHabitacion;
+    }
+
+    public void setNumeroHabitacion(int numeroHabitacion) {
+        this.numeroHabitacion = numeroHabitacion;
+    }
+
+    public int getHaId() {
         return haId;
     }
 
-    public void setHaId(Integer haId) {
+    public void setHaId(int haId) {
         this.haId = haId;
     }
 
-    public Integer getUsrId() {
-        return UsrId;
+    public int getUsrId() {
+        return usrId;
     }
 
-    public void setUsrId(Integer usrId) {
-        UsrId = usrId;
+    public void setUsrId(int usrId) {
+        this.usrId = usrId;
     }
 }

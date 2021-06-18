@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.app.Instrumentation;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -25,9 +26,15 @@ import android.view.View;
 import android.widget.SearchView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.NetworkError;
+import com.android.volley.NoConnectionError;
+import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.ServerError;
+import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -36,6 +43,8 @@ import com.example.mimotelsv.adaptadores.MotelesAdapter;
 import com.example.mimotelsv.modelos.Motel;
 import com.example.mimotelsv.util.Constantes;
 import com.example.mimotelsv.util.RecyclerItemClickListener;
+import com.example.mimotelsv.util.Session;
+import com.example.mimotelsv.util.Util;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.gson.Gson;
@@ -57,17 +66,20 @@ public class Activity_moteles extends AppCompatActivity implements NavigationVie
     private Constantes con  = new Constantes();
     SwipeRefreshLayout myRefresh;
     private List<Motel> lista = new ArrayList<>();
+    private Session sesion;
     private String municipio = "0";
     private String categoria = "0";
     private String nombre = "null";
+    private Util util = new Util();
+    Toolbar toolbar;
     private LinearProgressIndicator barraMoteles;
     private DrawerLayout drawerLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_moteles);
-
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        sesion = new Session(this);
+         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         drawerLayout = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -91,7 +103,8 @@ public class Activity_moteles extends AppCompatActivity implements NavigationVie
         rcvMoteles.setAdapter(motelAdaptador);
         barraMoteles = findViewById(R.id.progresBarMoteles);
         myRefresh.setRefreshing(false);
-        downloadData();
+        View view = findViewById(android.R.id.content).getRootView();
+        downloadData(view);
         myRefresh.setOnRefreshListener(
                 new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
@@ -109,6 +122,8 @@ public class Activity_moteles extends AppCompatActivity implements NavigationVie
             public void onItemClick(View view, int position) {
                 Intent detalleMotel = new Intent(Activity_moteles.this, Activity_detalle_motel.class);
                 detalleMotel.putExtra("idMotel",String.valueOf(lista.get(position).getId()));
+                detalleMotel.putExtra("nombreMotel",String.valueOf(lista.get(position).getNombre()));
+
                 startActivity(detalleMotel);
             }
 
@@ -120,7 +135,7 @@ public class Activity_moteles extends AppCompatActivity implements NavigationVie
 
     }
 
-        protected void downloadData() {
+        protected void downloadData(View v) {
         barraMoteles.show();
             String URL = "http://"+con.IP+":8080/moteles/lista/"+municipio+"/"+categoria+"/"+nombre;
             JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, URL, null,
@@ -138,7 +153,9 @@ public class Activity_moteles extends AppCompatActivity implements NavigationVie
                                         Motel mo = new Motel();
                                         // Get the current student (json object) data
                                         mo.setId(motel.getInt("moId"));
+
                                         mo.setNombre(motel.getString("moNombre"));
+
                                         mo.setDireccion(motel.getString("moDireccion"));
                                         ByteArrayOutputStream baos = new ByteArrayOutputStream();
                                         byte[] imageBytes = baos.toByteArray();
@@ -162,7 +179,17 @@ public class Activity_moteles extends AppCompatActivity implements NavigationVie
                     new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            Toast.makeText(getBaseContext(),error.toString(),Toast.LENGTH_LONG).show();
+                            if (error instanceof TimeoutError || error instanceof NoConnectionError) {
+                                util.mostrarSnack(v, barraMoteles);
+                            } else if (error instanceof AuthFailureError) {
+                                util.mostrarSnack(v,barraMoteles);
+                            } else if (error instanceof ServerError) {
+                                util.mostrarSnack(v,barraMoteles);
+                            } else if (error instanceof NetworkError) {
+                                util.mostrarSnack(v,barraMoteles);
+                            } else if (error instanceof ParseError) {
+                                util.mostrarSnack(v,barraMoteles);
+                            }
                         }
                     });
 
@@ -204,18 +231,19 @@ public class Activity_moteles extends AppCompatActivity implements NavigationVie
                 (SearchView) menu.findItem(R.id.search).getActionView();
         searchView.setSearchableInfo(
                 searchManager.getSearchableInfo(getComponentName()));
+        searchView.requestFocusFromTouch();
         return true;
     }
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.filtros:
-                Intent filtros = new Intent(Activity_moteles.this,Filtrar.class);
-                startActivity(filtros);
-                return true;
-
-
-        }
+//        switch (item.getItemId()) {
+//            case R.id.filtros:
+//                Intent filtros = new Intent(Activity_moteles.this,Filtrar.class);
+//                startActivity(filtros);
+//                return true;
+//
+//
+//        }
         return super.onOptionsItemSelected(item);
     }
     @Override
@@ -233,14 +261,21 @@ public class Activity_moteles extends AppCompatActivity implements NavigationVie
             case R.id.nav_home:
                 title = R.string.menu_home;
                 break;
-            case R.id.nav_perfil:
-                title = R.string.menu_perfil;
-                break;
+
             case R.id.nav_reservaciones:
                 title = R.string.menu_reservaciones;
+                Intent reservaciones = new Intent(Activity_moteles.this, ActivityReservaciones.class);
+                startActivity(reservaciones);
+
                 break;
             case R.id.nav_logout:
                 title = R.string.menu_logout;
+                sesion.borrarDatos("idUsuario");
+                sesion.borrarDatos("nombre");
+
+                Intent login = new Intent(Activity_moteles.this,MainActivity.class );
+                startActivity(login);
+                finish();
                 break;
 
             default:

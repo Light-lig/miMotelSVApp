@@ -41,12 +41,15 @@ public class Activity_detalle_motel extends AppCompatActivity {
         viewPager = findViewById(R.id.pagerMotel);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
+        Intent intent = getIntent();
+        idMotel = intent.getStringExtra("idMotel");
+        String nombreMotel = intent.getStringExtra("nombreMotel");
+        toolbar.setTitle(nombreMotel);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
 
         actionBar.setDisplayHomeAsUpEnabled(true);
-        Intent intent = getIntent();
-        idMotel = intent.getStringExtra("idMotel");
+
 
         pagerAdapter = new Activity_detalle_motel.ScreenSlidePagerAdapter(this);
         viewPager.setAdapter(pagerAdapter);

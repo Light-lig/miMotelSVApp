@@ -38,6 +38,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.mimotelsv.modelos.Motel;
 import com.example.mimotelsv.util.Constantes;
+import com.example.mimotelsv.util.Util;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -70,6 +71,7 @@ public class detalleMotel extends Fragment implements OnMapReadyCallback {
     private TextView txtNombre, txtDireccion, txtHoraApertura, txtHoraCierre,txtRating;
     private RatingBar rating;
     private LinearProgressIndicator barraDetalleMotel;
+    private Util util = new Util();
     MapView mapView;
     GoogleMap map;
     private  Motel mo = new Motel();
@@ -167,17 +169,15 @@ public class detalleMotel extends Fragment implements OnMapReadyCallback {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         if (error instanceof TimeoutError || error instanceof NoConnectionError) {
-                            Toast.makeText(getContext(),
-                                    getContext().getString(R.string.error_network_timeout),
-                                    Toast.LENGTH_LONG).show();
+                            util.mostrarSnack(v, barraDetalleMotel);
                         } else if (error instanceof AuthFailureError) {
-                            //TODO
+                            util.mostrarSnack(v,barraDetalleMotel);
                         } else if (error instanceof ServerError) {
-                            //TODO
+                            util.mostrarSnack(v,barraDetalleMotel);
                         } else if (error instanceof NetworkError) {
-                            //TODO
+                            util.mostrarSnack(v,barraDetalleMotel);
                         } else if (error instanceof ParseError) {
-                            //TODO
+                            util.mostrarSnack(v,barraDetalleMotel);
                         }
                     }
                 });

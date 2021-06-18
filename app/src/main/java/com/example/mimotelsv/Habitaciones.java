@@ -32,6 +32,7 @@ import com.example.mimotelsv.modelos.Habitacion;
 import com.example.mimotelsv.modelos.Motel;
 import com.example.mimotelsv.util.Constantes;
 import com.example.mimotelsv.util.RecyclerItemClickListener;
+import com.example.mimotelsv.util.Util;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.gson.JsonArray;
 
@@ -58,7 +59,7 @@ public class Habitaciones extends Fragment {
     private List<Habitacion> lista = new ArrayList<>();
     private HabitacionesAdapter adaptador;
     private LinearProgressIndicator barraDetalleMotel;
-
+    private Util util = new Util();
     // TODO: Rename and change types of parameters
     private String idMotel;
 
@@ -98,8 +99,7 @@ public class Habitaciones extends Fragment {
         rvHabitaciones = v.findViewById(R.id.rvHabitaciones);
         barraDetalleMotel = v.findViewById(R.id.progressBarHabitaciones);
         barraDetalleMotel.show();
-        DownloadTask tarea = new DownloadTask();
-        tarea.execute();
+        DownloadTask(v);
         adaptador = new HabitacionesAdapter(lista);
         rvHabitaciones.setAdapter(adaptador);
         rvHabitaciones.addOnItemTouchListener(new RecyclerItemClickListener(getActivity().getBaseContext(), rvHabitaciones, new RecyclerItemClickListener.OnItemClickListener() {
@@ -107,6 +107,7 @@ public class Habitaciones extends Fragment {
             public void onItemClick(View view, int position) {
                 Intent detalleHabitacion = new Intent(getActivity(), Activity_detalle_habitacion.class);
                 detalleHabitacion.putExtra("idHabitacion",String.valueOf(lista.get(position).getId()));
+
                 startActivity(detalleHabitacion);
             }
 
@@ -118,10 +119,7 @@ public class Habitaciones extends Fragment {
 
         return v;
     }
-    private class DownloadTask extends AsyncTask<String, Void, String> {
-
-        @Override
-        protected String doInBackground(String... strings) {
+    private void DownloadTask(View v) {
             String URL = "http://"+con.IP+":8080/moteles/habitacion/" + idMotel;
             JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, URL, null,
                     new Response.Listener<JSONArray>() {
@@ -170,36 +168,26 @@ public class Habitaciones extends Fragment {
                         @Override
                         public void onErrorResponse(VolleyError error) {
                             if (error instanceof TimeoutError || error instanceof NoConnectionError) {
-                                Toast.makeText(getContext(),
-                                        getContext().getString(R.string.error_network_timeout),
-                                        Toast.LENGTH_LONG).show();
+                                util.mostrarSnack(v, barraDetalleMotel);
                             } else if (error instanceof AuthFailureError) {
-                                //TODO
+                                util.mostrarSnack(v,barraDetalleMotel);
                             } else if (error instanceof ServerError) {
-                                //TODO
+                                util.mostrarSnack(v,barraDetalleMotel);
                             } else if (error instanceof NetworkError) {
-                                //TODO
+                                util.mostrarSnack(v,barraDetalleMotel);
                             } else if (error instanceof ParseError) {
-                                //TODO
+                                util.mostrarSnack(v,barraDetalleMotel);
                             }
                         }
                     });
 
             request.setRetryPolicy(new
-
                     DefaultRetryPolicy(60000,
                     DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                     DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
 
             Volley.newRequestQueue(getActivity()).add(request);
-            return null;
-        }
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
 
-
-        }
     }
 }

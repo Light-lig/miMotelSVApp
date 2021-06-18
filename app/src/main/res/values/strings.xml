@@ -53,6 +53,11 @@
     <string name="menu_reservaciones">Reservaciones</string>
     <string name="menu_logout">Log out</string>
     <string name="copyright">Mi motel sv</string>
+    <string name="channel_name">Habitaciones</string>
+    <string name="channel_description">Se muestran habitaciones disponibles.</string>
+    <string name="text_error_connection">Error de conexion.</string>
+    <string name="action_text">Aceptar</string>
+    <string name="motel_orden">Orden No:</string>
 
 
 </resources>

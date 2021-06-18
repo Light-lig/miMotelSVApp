@@ -11,11 +11,6 @@
             android:title="@string/menu_home" />
 
         <item
-            android:id="@+id/nav_perfil"
-            android:icon="@drawable/user"
-            android:title="@string/menu_perfil" />
-
-        <item
             android:id="@+id/nav_reservaciones"
             android:icon="@drawable/document"
             android:title="@string/menu_reservaciones" />

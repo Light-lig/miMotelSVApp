@@ -12,9 +12,9 @@
     <application
         android:allowBackup="true"
         android:usesCleartextTraffic="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/mi_motel_sv_splash"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/mi_motel_sv_splash"
         android:supportsRtl="true"
         android:theme="@style/Theme.MiMotelSv">
         <activity android:name=".Activity_singUp"></activity>
