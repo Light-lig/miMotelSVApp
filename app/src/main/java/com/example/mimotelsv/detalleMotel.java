@@ -169,15 +169,15 @@ public class detalleMotel extends Fragment implements OnMapReadyCallback {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         if (error instanceof TimeoutError || error instanceof NoConnectionError) {
-                            util.mostrarSnack(v, barraDetalleMotel);
+                            util.mostrarSnack(v, barraDetalleMotel, error.getMessage());
                         } else if (error instanceof AuthFailureError) {
-                            util.mostrarSnack(v,barraDetalleMotel);
+                            util.mostrarSnack(v,barraDetalleMotel, error.getMessage());
                         } else if (error instanceof ServerError) {
-                            util.mostrarSnack(v,barraDetalleMotel);
+                            util.mostrarSnack(v,barraDetalleMotel, error.getMessage());
                         } else if (error instanceof NetworkError) {
-                            util.mostrarSnack(v,barraDetalleMotel);
+                            util.mostrarSnack(v,barraDetalleMotel, error.getMessage());
                         } else if (error instanceof ParseError) {
-                            util.mostrarSnack(v,barraDetalleMotel);
+                            util.mostrarSnack(v,barraDetalleMotel, error.getMessage());
                         }
                     }
                 });

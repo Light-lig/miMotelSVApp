@@ -64,22 +64,23 @@ public class Activity_moteles extends AppCompatActivity implements NavigationVie
     private MotelesAdapter motelAdaptador;
     private RecyclerView rcvMoteles;
     private Constantes con  = new Constantes();
-    SwipeRefreshLayout myRefresh;
+    private SwipeRefreshLayout myRefresh;
     private List<Motel> lista = new ArrayList<>();
     private Session sesion;
     private String municipio = "0";
     private String categoria = "0";
     private String nombre = "null";
     private Util util = new Util();
-    Toolbar toolbar;
+    private Toolbar toolbar;
     private LinearProgressIndicator barraMoteles;
     private DrawerLayout drawerLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_moteles);
         sesion = new Session(this);
-         toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         drawerLayout = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -134,8 +135,7 @@ public class Activity_moteles extends AppCompatActivity implements NavigationVie
         }));
 
     }
-
-        protected void downloadData(View v) {
+    protected void downloadData(View v) {
         barraMoteles.show();
             String URL = "http://"+con.IP+":8080/moteles/lista/"+municipio+"/"+categoria+"/"+nombre;
             JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, URL, null,
@@ -180,15 +180,20 @@ public class Activity_moteles extends AppCompatActivity implements NavigationVie
                         @Override
                         public void onErrorResponse(VolleyError error) {
                             if (error instanceof TimeoutError || error instanceof NoConnectionError) {
-                                util.mostrarSnack(v, barraMoteles);
+                                util.mostrarSnack(v, barraMoteles, error.getMessage());
+                                myRefresh.setRefreshing(true);
                             } else if (error instanceof AuthFailureError) {
-                                util.mostrarSnack(v,barraMoteles);
+                                util.mostrarSnack(v,barraMoteles, error.getMessage());
+                                myRefresh.setRefreshing(true);
                             } else if (error instanceof ServerError) {
-                                util.mostrarSnack(v,barraMoteles);
+                                util.mostrarSnack(v,barraMoteles, error.getMessage());
+                                myRefresh.setRefreshing(true);
                             } else if (error instanceof NetworkError) {
-                                util.mostrarSnack(v,barraMoteles);
+                                util.mostrarSnack(v,barraMoteles, error.getMessage());
+                                myRefresh.setRefreshing(true);
                             } else if (error instanceof ParseError) {
-                                util.mostrarSnack(v,barraMoteles);
+                                util.mostrarSnack(v,barraMoteles, error.getMessage());
+                                myRefresh.setRefreshing(true);
                             }
                         }
                     });
@@ -203,8 +208,6 @@ public class Activity_moteles extends AppCompatActivity implements NavigationVie
             Volley.newRequestQueue(this).add(request);
 
         }
-
-
     @Override
     protected void onNewIntent(Intent intent) {
 
@@ -231,19 +234,13 @@ public class Activity_moteles extends AppCompatActivity implements NavigationVie
                 (SearchView) menu.findItem(R.id.search).getActionView();
         searchView.setSearchableInfo(
                 searchManager.getSearchableInfo(getComponentName()));
+        searchView.setFocusable(true);
         searchView.requestFocusFromTouch();
         return true;
     }
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-//        switch (item.getItemId()) {
-//            case R.id.filtros:
-//                Intent filtros = new Intent(Activity_moteles.this,Filtrar.class);
-//                startActivity(filtros);
-//                return true;
-//
-//
-//        }
+
         return super.onOptionsItemSelected(item);
     }
     @Override
@@ -286,22 +283,18 @@ public class Activity_moteles extends AppCompatActivity implements NavigationVie
 
         return true;
     }
-
     @Override
     public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
 
     }
-
     @Override
     public void onDrawerOpened(@NonNull View drawerView) {
 
     }
-
     @Override
     public void onDrawerClosed(@NonNull View drawerView) {
 
     }
-
     @Override
     public void onDrawerStateChanged(int newState) {
 

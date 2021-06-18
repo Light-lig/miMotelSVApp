@@ -56,6 +56,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -70,22 +71,22 @@ import java.util.concurrent.TimeUnit;
 public class Activity_detalle_habitacion extends AppCompatActivity {
     // creating object of ViewPager
     private Constantes con  = new Constantes();
-    ViewPager mViewPager;
-    TextView txtNombre, txtTipo, txtPrecio, txtTiempo, txtDescripcion, txtEstado;
-    ImageView ivEstado;
-    MaterialButton btnReservar;
+    private ViewPager mViewPager;
+    private TextView txtNombre, txtTipo, txtPrecio, txtTiempo, txtDescripcion, txtEstado;
+    private ImageView ivEstado;
+    private MaterialButton btnReservar;
     private String idHabitacion;
     private LinearProgressIndicator barraProgreso;
     private Session preferencias;
     private  Habitacion ha = new Habitacion();
     private Reservacion res = new Reservacion();
     private Util util = new Util();
-    Toolbar toolbar;
+    private Toolbar toolbar;
     // images array
-    List<String> images = new ArrayList<>();
+    private List<String> images = new ArrayList<>();
 
     // Creating Object of ViewPagerAdapter
-    ViewPagerAdapter mViewPagerAdapter;
+    private ViewPagerAdapter mViewPagerAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -223,15 +224,15 @@ public class Activity_detalle_habitacion extends AppCompatActivity {
                         @Override
                         public void onErrorResponse(VolleyError error) {
                             if (error instanceof TimeoutError || error instanceof NoConnectionError) {
-                                util.mostrarSnack(v, barraProgreso);
+                                util.mostrarSnack(v, barraProgreso, error.getMessage());
                             } else if (error instanceof AuthFailureError) {
-                                util.mostrarSnack(v,barraProgreso);
+                                util.mostrarSnack(v,barraProgreso, error.getMessage());
                             } else if (error instanceof ServerError) {
-                                util.mostrarSnack(v,barraProgreso);
+                                util.mostrarSnack(v,barraProgreso, error.getMessage());
                             } else if (error instanceof NetworkError) {
-                                util.mostrarSnack(v,barraProgreso);
+                                util.mostrarSnack(v,barraProgreso, error.getMessage());
                             } else if (error instanceof ParseError) {
-                                util.mostrarSnack(v,barraProgreso);
+                                util.mostrarSnack(v,barraProgreso, error.getMessage());
                             }
                         }
                     });
@@ -286,15 +287,41 @@ public class Activity_detalle_habitacion extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         if (error instanceof TimeoutError || error instanceof NoConnectionError) {
-                            util.mostrarSnack(v, barraProgreso);
+                            try {
+                                JSONObject mensaje = new JSONObject(new String(error.networkResponse.data,"UTF-8"));
+                                util.mostrarSnack(v, barraProgreso , mensaje.getString("mensaje"));
+                            } catch (UnsupportedEncodingException | JSONException e) {
+                                e.printStackTrace();
+                            }
+
                         } else if (error instanceof AuthFailureError) {
-                            util.mostrarSnack(v,barraProgreso);
+                            try {
+                                JSONObject mensaje = new JSONObject(new String(error.networkResponse.data,"UTF-8"));
+                                util.mostrarSnack(v, barraProgreso , mensaje.getString("mensaje"));
+                            } catch (UnsupportedEncodingException | JSONException e) {
+                                e.printStackTrace();
+                            }
                         } else if (error instanceof ServerError) {
-                            util.mostrarSnack(v,barraProgreso);
+                            try {
+                                JSONObject mensaje = new JSONObject(new String(error.networkResponse.data,"UTF-8"));
+                                util.mostrarSnack(v, barraProgreso , mensaje.getString("mensaje"));
+                            } catch (UnsupportedEncodingException | JSONException e) {
+                                e.printStackTrace();
+                            }
                         } else if (error instanceof NetworkError) {
-                            util.mostrarSnack(v,barraProgreso);
+                            try {
+                                JSONObject mensaje = new JSONObject(new String(error.networkResponse.data,"UTF-8"));
+                                util.mostrarSnack(v, barraProgreso , mensaje.getString("mensaje"));
+                            } catch (UnsupportedEncodingException | JSONException e) {
+                                e.printStackTrace();
+                            }
                         } else if (error instanceof ParseError) {
-                            util.mostrarSnack(v,barraProgreso);
+                            try {
+                                JSONObject mensaje = new JSONObject(new String(error.networkResponse.data,"UTF-8"));
+                                util.mostrarSnack(v, barraProgreso , mensaje.getString("mensaje"));
+                            } catch (UnsupportedEncodingException | JSONException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
                 });

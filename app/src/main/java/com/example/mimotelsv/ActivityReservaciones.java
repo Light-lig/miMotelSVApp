@@ -143,15 +143,15 @@ public class ActivityReservaciones extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         if (error instanceof TimeoutError || error instanceof NoConnectionError) {
-                            util.mostrarSnack(v, barraReservaciones);
+                            util.mostrarSnack(v, barraReservaciones, error.getMessage());
                         } else if (error instanceof AuthFailureError) {
-                            util.mostrarSnack(v,barraReservaciones);
+                            util.mostrarSnack(v,barraReservaciones,error.getMessage());
                         } else if (error instanceof ServerError) {
-                            util.mostrarSnack(v,barraReservaciones);
+                            util.mostrarSnack(v,barraReservaciones,error.getMessage());
                         } else if (error instanceof NetworkError) {
-                            util.mostrarSnack(v,barraReservaciones);
+                            util.mostrarSnack(v,barraReservaciones,error.getMessage());
                         } else if (error instanceof ParseError) {
-                            util.mostrarSnack(v,barraReservaciones);
+                            util.mostrarSnack(v,barraReservaciones,error.getMessage());
                         }
                     }
                 });

@@ -11,9 +11,9 @@ public class Util {
 
     }
 
-    public void mostrarSnack(View v, LinearProgressIndicator barraProgreso){
+    public void mostrarSnack(View v, LinearProgressIndicator barraProgreso, String mensaje){
 
-        Snackbar.make(v, R.string.text_error_connection, Snackbar.LENGTH_LONG).setAction(R.string.action_text, new View.OnClickListener(){
+        Snackbar.make(v, mensaje, Snackbar.LENGTH_LONG).setAction(R.string.action_text, new View.OnClickListener(){
             @Override
             public void onClick(View v) {
 

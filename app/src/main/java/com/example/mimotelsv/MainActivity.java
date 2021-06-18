@@ -37,8 +37,12 @@ import com.example.mimotelsv.util.Validaciones;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.gson.JsonObject;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -111,11 +115,10 @@ public class MainActivity extends ComponentActivity {
                             new Response.Listener<JSONObject>() {
                                 @Override
                                 public void onResponse(JSONObject response) {
-                                    if (response == null) {
-                                        barraProgreso.hide();
-                                        Toast.makeText(getBaseContext(), "Usuario o contrasenia no valido", Toast.LENGTH_LONG).show();
-                                    } else {
+                                    if (response != null) {
                                         try {
+                                            barraProgreso.hide();
+                                            Toast.makeText(getBaseContext(), "Bienvenido.", Toast.LENGTH_LONG).show();
                                             preferencias.salvarDatos("idUsuario", "int", String.valueOf(response.getInt("usrId")));
                                             preferencias.salvarDatos("nombre", "string", response.getString("usrCorreo"));
                                             barraProgreso.hide();
@@ -134,15 +137,20 @@ public class MainActivity extends ComponentActivity {
                                 @Override
                                 public void onErrorResponse(VolleyError error) {
                                     if (error instanceof TimeoutError || error instanceof NoConnectionError) {
-                                        util.mostrarSnack(v, barraProgreso);
+                                        util.mostrarSnack(v, barraProgreso, error.getMessage());
                                     } else if (error instanceof AuthFailureError) {
-                                        util.mostrarSnack(v, barraProgreso);
+                                        try {
+                                            JSONObject mensaje = new JSONObject(new String(error.networkResponse.data,"UTF-8"));
+                                            util.mostrarSnack(v, barraProgreso , mensaje.getString("mensaje"));
+                                        } catch (UnsupportedEncodingException | JSONException e) {
+                                            e.printStackTrace();
+                                        }
                                     } else if (error instanceof ServerError) {
-                                        util.mostrarSnack(v, barraProgreso);
+                                        util.mostrarSnack(v, barraProgreso , error.getMessage());
                                     } else if (error instanceof NetworkError) {
-                                        util.mostrarSnack(v, barraProgreso);
+                                        util.mostrarSnack(v, barraProgreso , error.getMessage());
                                     } else if (error instanceof ParseError) {
-                                        util.mostrarSnack(v, barraProgreso);
+                                        util.mostrarSnack(v, barraProgreso , error.getMessage());
                                     }
                                 }
                             });
